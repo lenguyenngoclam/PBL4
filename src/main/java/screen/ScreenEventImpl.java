@@ -83,7 +83,8 @@ public class ScreenEventImpl extends UnicastRemoteObject implements ScreenEvent{
 
 	@Override
 	public void mouseMovedEvent(int xScale, int yScale) throws RemoteException {		//Robot evevnt for when the Mouse is Moved on the Client Machine
-		robot.mouseMove(xScale, yScale);					//Moves Cursor to the given coordinates
+		robot.mouseMove(xScale, yScale); //Moves Cursor to the given coordinates
+		System.out.println("Coordinate : " + xScale + "," + yScale);
 	}
 
 

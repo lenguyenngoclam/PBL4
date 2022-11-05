@@ -239,7 +239,7 @@ public class Client extends JFrame implements ActionListener{
 			
 			panel.addKeyListener(this);
 			panel.addMouseListener(this);
-//			panel.addMouseMotionListener(this);
+			panel.addMouseMotionListener(this);
 		}
 
 		@Override
@@ -249,7 +249,7 @@ public class Client extends JFrame implements ActionListener{
 		@Override
 		public void mousePressed(MouseEvent e) {				//event for when the mouse button is pressed
 			int buttonPressed = e.getButton();
-			
+			System.out.println(buttonPressed);
 			try {
 				stub.mousePressedEvent(buttonPressed);
 			} 
@@ -288,7 +288,7 @@ public class Client extends JFrame implements ActionListener{
 		public void mouseMoved(MouseEvent e) {						//event for mouse movement
 			double xAxis = (double) stubWidth / panel.getWidth();				//scale for the X axis
 			double yAxis = (double) stubHeight / panel.getHeight();				//scale for the Y axis
-			
+			System.out.println(xAxis + " , " + yAxis);
 			try {
 				stub.mouseMovedEvent((int) (e.getX() * xAxis), (int) (e.getY() * yAxis));
 			} 
