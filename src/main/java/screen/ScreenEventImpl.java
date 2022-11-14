@@ -1,4 +1,5 @@
 package screen;
+
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
@@ -71,7 +72,8 @@ public class ScreenEventImpl extends UnicastRemoteObject implements ScreenEvent{
 	}
 	
 	
-	public double getWidth() {						//Returns width of the Server Machine' Screen
+	public double getWidth() { //Returns width of the Server Machine' Screen
+		System.out.println("Width : " + width);
 		return width;
 	}
 	

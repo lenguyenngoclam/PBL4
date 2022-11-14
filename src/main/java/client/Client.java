@@ -285,7 +285,8 @@ public class Client extends JFrame implements ActionListener{
 
 		
 		@Override
-		public void mouseMoved(MouseEvent e) {						//event for mouse movement
+		public void mouseMoved(MouseEvent e) { //event for mouse movement
+			System.out.println("stub width : " + stubWidth + ", stub height : " + stubHeight);
 			double xAxis = (double) stubWidth / panel.getWidth();				//scale for the X axis
 			double yAxis = (double) stubHeight / panel.getHeight();				//scale for the Y axis
 			System.out.println(xAxis + " , " + yAxis);

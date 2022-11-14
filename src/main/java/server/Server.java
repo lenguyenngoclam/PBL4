@@ -23,7 +23,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import screen.ScreenEvent;
 import screen.ScreenEventImpl;
 
-
 public class Server extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
 	InetAddress privateIP;
