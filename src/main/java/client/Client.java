@@ -274,7 +274,7 @@ public class Client extends JFrame implements ActionListener{
 		@Override
 		public void keyPressed(KeyEvent e) {					//event for when a keyboard button is pressed
 			try {
-				stub.keyPressed(e.getKeyCode());
+                              stub.keyPressed(e.getKeyCode());
 			}
 			catch (RemoteException ex) {
 				ex.printStackTrace();
