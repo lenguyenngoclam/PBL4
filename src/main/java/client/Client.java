@@ -13,17 +13,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -35,6 +30,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import screen.ScreenEvent;
+import screen.ScreenWorker;
 
 public class Client extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
@@ -185,6 +181,9 @@ public class Client extends JFrame implements ActionListener{
 			Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 			setSize(r.width, r.height);
 			
+			System.out.println("r width : " + r.width + ", r height : " + r.height);
+			System.out.println("stub width : " + stubWidth + ", stub height : " + stubHeight);
+
 			setMaximumSize(new Dimension(r.width, r.height));
 			setMinimumSize(new Dimension((int)(r.width /1.2),(int)( r.height /1.2)));
 			
@@ -205,38 +204,8 @@ public class Client extends JFrame implements ActionListener{
 			setTitle("Remote Desktop Manager - ControlWiz");
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
-			
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					while(true) {
-						try {
-							byte[] bytes = new byte[1024 * 1024];
-							
-							bytes = stub.sendScreen();							//array of bytes is read from the stub object
-							
-							BufferedImage bImage = ImageIO.read(new ByteArrayInputStream(bytes));		//byte array is converted back to an image
-							label.setIcon(new ImageIcon(bImage));				//image is set to the label
-							
-							try {
-								Thread.sleep(10000);
-							} 
-							catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						catch (RemoteException e) {
-							e.printStackTrace();
-						}
-						catch (IOException e) {
-							e.printStackTrace();
-						}
-						
-					}
-				}
-			});
-			thread.start();
-			
+			new ScreenWorker(stub, label).execute();
+
 			panel.addKeyListener(this);
 			panel.addMouseListener(this);
 			panel.addMouseMotionListener(this);
@@ -286,7 +255,6 @@ public class Client extends JFrame implements ActionListener{
 		
 		@Override
 		public void mouseMoved(MouseEvent e) { //event for mouse movement
-			System.out.println("stub width : " + stubWidth + ", stub height : " + stubHeight);
 			double xAxis = (double) stubWidth / panel.getWidth();				//scale for the X axis
 			double yAxis = (double) stubHeight / panel.getHeight();				//scale for the Y axis
 			System.out.println(xAxis + " , " + yAxis);
