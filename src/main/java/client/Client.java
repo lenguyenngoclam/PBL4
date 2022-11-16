@@ -200,11 +200,13 @@ public class Client extends JFrame implements ActionListener{
 			catch (PropertyVetoException e) {
 				e.printStackTrace();
 			}
-			panel.setFocusable(true);								//panel will be the focused Component, required for KeyListener
+			panel.setFocusable(true);	
+                        panel.requestFocusInWindow();
+                        //panel will be the focused Component, required for KeyListener
 			setTitle("Remote Desktop Manager - ControlWiz");
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
-			new ScreenWorker(stub, label).execute();
+			new ScreenWorker(stub, label, r.width, r.height).execute();
 
 			panel.addKeyListener(this);
 			panel.addMouseListener(this);
