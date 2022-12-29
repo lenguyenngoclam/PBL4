@@ -12,35 +12,38 @@ import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 import org.imgscalr.Scalr;
 
-public class ScreenWorker extends SwingWorker<Void, Void>{
-    private ScreenEvent stub;
-    private JLabel label;
-    private int clientWidth, clientHeight;
+public class ScreenWorker extends SwingWorker<Void, Void> {
 
-    public ScreenWorker(ScreenEvent stub, JLabel lable, int clientWidth, int clientHeight) {
-        this.stub = stub;
-        this.label = lable;
-        this.clientWidth = clientWidth;
-        this.clientHeight = clientHeight;
-    }
+     private ScreenEvent stub;
+     private JLabel label;
+     private int clientWidth, clientHeight;
 
-    @Override
-    protected Void doInBackground() throws Exception {
-        while (true) {
-            try {
-                byte[] bytes = new byte[1024 * 1024];
+     public ScreenWorker(ScreenEvent stub, JLabel lable, int clientWidth, int clientHeight) {
+          this.stub = stub;
+          this.label = lable;
+          this.clientWidth = clientWidth;
+          this.clientHeight = clientHeight;
+     }
 
-                bytes = stub.sendScreen(); //Đọc mảng bytes từ đối tượng stub
+     @Override
+     protected Void doInBackground() throws Exception {
+          while (true) {
+               try {
+                    byte[] bytes = new byte[1024 * 1024];
 
-                BufferedImage bImage = ImageIO.read(new ByteArrayInputStream(bytes)); //Mảng bytes được chuyển lại về ảnh
-                BufferedImage scaledImg = Scalr.resize(bImage, clientWidth, clientHeight, Scalr.OP_ANTIALIAS);
-                label.setIcon(new ImageIcon(scaledImg)); //Hiển thị ảnh lên label
+                    bytes = stub.sendScreen(); //Đọc mảng bytes từ đối tượng stub
 
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+                    BufferedImage bImage = ImageIO.read(new ByteArrayInputStream(bytes)); //Mảng bytes được chuyển lại về ảnh
+                    BufferedImage scaledImg = Scalr.resize(bImage, clientWidth, clientHeight, Scalr.OP_ANTIALIAS);
+                    label.setIcon(new ImageIcon(scaledImg)); //Hiển thị ảnh lên label
+
+               }
+               catch (RemoteException e) {
+                    e.printStackTrace();
+               }
+               catch (IOException e) {
+                    e.printStackTrace();
+               }
+          }
+     }
 }

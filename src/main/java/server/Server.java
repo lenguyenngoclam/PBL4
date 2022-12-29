@@ -41,11 +41,11 @@ public class Server extends JFrame implements ActionListener {
           catch (IllegalAccessException e) {
           }
           catch (UnsupportedLookAndFeelException e) {
-          }        
+          }
 
           try {
                // Lấy đỉa chỉ private của máy
-               privateIP = InetAddress.getLocalHost();			
+               privateIP = InetAddress.getLocalHost();
           }
           catch (UnknownHostException e) {
                e.printStackTrace();
@@ -57,13 +57,13 @@ public class Server extends JFrame implements ActionListener {
           password = new JTextField(15);
           password.setToolTipText("Đặt mật khẩu. Chia sẻ mật khẩu này để các máy khác kết nối tới");
           password.setFont(new Font("Arial", Font.PLAIN, 16));
-          
+
           JButton submit = new JButton("Submit");
           submit.setFont(new Font("Arial", Font.PLAIN, 13));
 
           // Sử dụng JTextField thay vì JLabel để có thể sao chép
           JTextField IPlabel = new JTextField();
-          IPlabel.setText("Địa chỉ IP của máy bạn:  " + privateIP.getHostAddress());	
+          IPlabel.setText("Địa chỉ IP của máy bạn:  " + privateIP.getHostAddress());
           IPlabel.setFont(new Font("Arial", Font.PLAIN, 12));
           IPlabel.setEditable(false);
           IPlabel.setBorder(null);
@@ -96,7 +96,7 @@ public class Server extends JFrame implements ActionListener {
 
           setVisible(true);
           setSize(400, 130);
-          password.requestFocusInWindow();						
+          password.requestFocusInWindow();
           setResizable(false);
           setLocation(500, 300);
           setTitle("Cài đặt mật khẩu!");
@@ -114,25 +114,25 @@ public class Server extends JFrame implements ActionListener {
                * Tạo thanh ghi RMI trên cổng 1888 (Mặc định là 1099)
                * Naming class cung cấp các phương thức để lấy và lưu trữ đối tượng remote (stub) và bind đối tượng remote(burr)
            */
-          try {		
+          try {
 
                ScreenEvent stub = new ScreenEventImpl(password.getText());
 
                LocateRegistry.createRegistry(1888);
 
-               Naming.rebind("rmi://" + privateIP.getHostAddress() + ":1888/burr", stub);			
-               
+               Naming.rebind("rmi://" + privateIP.getHostAddress() + ":1888/burr", stub);
+
                JOptionPane.showMessageDialog(this, "Server đang chạy");
           }
           catch (RemoteException ex) {
                ex.printStackTrace();
-               JOptionPane.showConfirmDialog(this, "Có lỗi xảy ra");
+               JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
           }
           catch (MalformedURLException ex) {
                ex.printStackTrace();
-               JOptionPane.showConfirmDialog(this, "Có lỗi xảy ra");
+               JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
           }
-          
+
      }
 
 }
