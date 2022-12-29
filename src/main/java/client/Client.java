@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
@@ -121,11 +122,11 @@ public class Client extends JFrame implements ActionListener{
 		try {
 			//use System.setProperty when using publicIP of Server Machine for Interner Connection, 
 			//swap publicIP for Router IP if Internet Connection passes through a Router
-//			System.setProperty("java.rmi.server.hostname",serverIP.getText());
-//			LocateRegistry.getRegistry(serverIP.getText(), 1888);
-			
+			System.setProperty("java.rmi.server.hostname",serverIP.getText());
+			LocateRegistry.getRegistry(serverIP.getText(), 1888);
+			System.out.println(2);
 			stub = (ScreenEvent) Naming.lookup("rmi://" + serverIP.getText() + ":1888/burr");
-
+                        System.out.println(1);
 			if(! (stub.checkPassword(password.getText()))) {
 				System.out.println("Entered Credentials are wrong!");
 				System.exit(0);

@@ -5,12 +5,19 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,39 +33,49 @@ import screen.ScreenEventImpl;
 public class Server extends JFrame implements ActionListener{
     private static final long serialVersionUID = 1L;
 	InetAddress privateIP;
+        InetAddress publicIP;
 	JTextField password;
 	
 	public Server() {
-		try {   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());   }
-		catch (ClassNotFoundException e) {}
-        catch (InstantiationException e) {}
-        catch (IllegalAccessException e) {}
-        catch (UnsupportedLookAndFeelException e) {}        //Refines the look of the ui
+               try {   
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());   
+               }
+               catch (ClassNotFoundException e) {}
+               catch (InstantiationException e) {}
+               catch (IllegalAccessException e) {}
+               catch (UnsupportedLookAndFeelException e) {}        //Refines the look of the ui
 		
-		try {
-			privateIP = InetAddress.getLocalHost();			//Local (Private) IP of your Machine
-		} 
-		catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
+               try {
+                    privateIP = InetAddress.getLocalHost();			//Local (Private) IP of your Machine
+                    URL whatismyip = new URL("http://checkip.amazonaws.com"); // Website that can show you your public IP Address
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                                    whatismyip.openStream()));
+
+                    publicIP = InetAddress.getByName(in.readLine()); // Public IP of your machine
+               } 
+               catch (UnknownHostException e) {
+                    e.printStackTrace();
+               }
+               catch (MalformedURLException ex) {
+                    ex.printStackTrace();
+               }
+               catch (IOException ex) {
+                    ex.printStackTrace();
+               }
 		
-		//Creating a GUI which prompts the user to Set up a Password
-		JLabel label = new JLabel("Set Password:");
-		label.setFont(new Font("Arial", Font.PLAIN, 13));
-		password = new JTextField(15);
-		password.setToolTipText("Set a Password. Share the password to Connect with your Machine!");
-		password.setFont(new Font("Arial", Font.PLAIN, 16));
-		JButton submit = new JButton("Submit");
-		submit.setFont(new Font("Arial", Font.PLAIN, 13));
+               //Creating a GUI which prompts the user to Set up a Password
+               JLabel label = new JLabel("Set Password:");
+               label.setFont(new Font("Arial", Font.PLAIN, 13));
+               password = new JTextField(15);
+               password.setToolTipText("Set a Password. Share the password to Connect with your Machine!");
+               password.setFont(new Font("Arial", Font.PLAIN, 16));
+               JButton submit = new JButton("Submit");
+               submit.setFont(new Font("Arial", Font.PLAIN, 13));
 		
-		//using JTextField instead of a JLabel to display information because, the text in textField can be selected and copied
+               //using JTextField instead of a JLabel to display information because, the text in textField can be selected and copied
 		JTextField  IPlabel = new JTextField ();					
-		IPlabel.setText("Your Machine' IP Address is:  " + privateIP.getHostAddress());			//for intraNet Connection
-		//for internet Connection (public IP as shown below or RouterIP)
-//		URL publicIpUrl = new URL("http://bot.whatismyipaddress.com");			//this website displays the system' public IP address
-//		BufferedReader br = new BufferedReader(new InputStreamReader(publicIpUrl.openStream()));					//to read the URL	
-//		String publicIP = br.readLine().trim())									//gets the first line of the URL
-//		IPlabel.setText("Your Machine' IP Address is:  " + publicIP;			//for Internet Connection 
+		IPlabel.setText("Your Machine' public IP Address is:  " + publicIP.getHostAddress()); // for internet connection
+		
 		IPlabel.setFont(new Font("Arial", Font.PLAIN, 12));
 		IPlabel.setEditable(false);
 		IPlabel.setBorder(null);
@@ -105,37 +122,37 @@ public class Server extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		dispose();									//when submit is clicked, the GUI is disposed
-		/*
-		 * Creating RMI Registry on port 1888 (default for RMI is 1099)
-		 * Naming class provides methods to get and store the remote object (stub)
-		 * and bind the remote object by a name (burr)
-		 */
-		try {
-			//use System.setProperty when using publicIP for Interner Connection, 
-			//swap publicIP for Router IP if Internet Connection passes through a Router
-//			System.setProperty("java.rmi.server.hostname", publicIP);		
+               dispose();									//when submit is clicked, the GUI is disposed
+               /*
+                * Creating RMI Registry on port 1888 (default for RMI is 1099)
+                * Naming class provides methods to get and store the remote object (stub)
+                * and bind the remote object by a name (burr)
+               */
+               try {
+                    //use System.setProperty when using publicIP for Interner Connection, 
+                    //swap publicIP for Router IP if Internet Connection passes through a Router
+                    System.setProperty("java.rmi.server.hostname", publicIP.getHostAddress());		
 			
-			ScreenEvent stub = new ScreenEventImpl(password.getText());
+                    ScreenEvent stub = new ScreenEventImpl(password.getText());
 			
-			//Uncomment below line for internet Connection and remove extends UnicastRemoteObject class from ScreeEventImpl Class
-			//1100 Port here is used as a Server Port
-//			ScreenEvent serverStub = (ScreenEvent) UnicastRemoteObject.exportObject(stub, 1100);
+                    //Uncomment below line for internet Connection and remove extends UnicastRemoteObcject class from ScreeEventImpl Class
+                    //1100 Port here is used as a Server Port
+                    ScreenEvent serverStub = (ScreenEvent) UnicastRemoteObject.exportObject(stub, 1100);
 
-			//RMIRegistry on port 1888
-			LocateRegistry.createRegistry(1888);
+                    //RMIRegistry on port 1888
+                    LocateRegistry.createRegistry(1888);
 			
-			//Naming rebind is done on the privateIP for both intraNet and internet Connection
-			Naming.rebind("rmi://" + privateIP.getHostAddress() + ":1888/burr", stub);			//Change remote Object stub to serverStub for internetConnection
-			System.out.println("Server Running!!!");
+                    //Naming rebind is done on the privateIP for both intraNet and internet Connection
+                    Naming.rebind("rmi://" + privateIP.getHostAddress() + ":1888/burr", serverStub);			//Change remote Object stub to serverStub for internetConnection
+                    System.out.println("Server Running!!!");
 			
-		} 
-		catch (RemoteException ex) {
-			ex.printStackTrace();
-		}
-		catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		}
+               } 
+               catch (RemoteException ex) {
+                    ex.printStackTrace();
+               }
+               catch (MalformedURLException ex) {
+                    ex.printStackTrace();
+               }
 	}
 
 }

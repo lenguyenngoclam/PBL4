@@ -16,7 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import javax.imageio.ImageIO;
 
-public class ScreenEventImpl extends UnicastRemoteObject implements ScreenEvent{
+public class ScreenEventImpl implements ScreenEvent{
     private static final long serialVersionUID = 1L;
 	Robot robot = null;
 	String password;
