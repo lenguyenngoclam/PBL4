@@ -126,11 +126,13 @@ public class Server extends JFrame implements ActionListener {
           }
           catch (RemoteException ex) {
                ex.printStackTrace();
+               JOptionPane.showConfirmDialog(this, "Có lỗi xảy ra");
           }
           catch (MalformedURLException ex) {
                ex.printStackTrace();
+               JOptionPane.showConfirmDialog(this, "Có lỗi xảy ra");
           }
-          JOptionPane.showConfirmDialog(this, "Có lỗi xảy ra");
+          
      }
 
 }

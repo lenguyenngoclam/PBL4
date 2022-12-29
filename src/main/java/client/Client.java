@@ -148,15 +148,18 @@ public class Client extends JFrame implements ActionListener {
                new ScreenFrame();
           }
           catch (MalformedURLException ex) {
+               JOptionPane.showMessageDialog(this, "Đã có lỗi xảy ra!");
                ex.printStackTrace();
           }
           catch (RemoteException ex) {
+               JOptionPane.showMessageDialog(this, "Đã có lỗi xảy ra!");
                ex.printStackTrace();
           }
           catch (NotBoundException ex) {
+               JOptionPane.showMessageDialog(this, "Đã có lỗi xảy ra!");
                ex.printStackTrace();
           }
-          JOptionPane.showMessageDialog(this, "Đã có lỗi xảy ra!");
+          
           return;
      }
      
