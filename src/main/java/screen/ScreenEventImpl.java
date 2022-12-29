@@ -130,6 +130,11 @@ public class ScreenEventImpl extends UnicastRemoteObject implements ScreenEvent 
 
      @Override
      public void mouseWheelMoved(int amount) throws RemoteException {
-          robot.mouseWheel(amount);
+          try{
+               robot.mouseWheel(amount);
+               Thread.sleep(50);
+          }catch(InterruptedException e){
+               e.printStackTrace();
+          }
      }
 }
