@@ -30,11 +30,11 @@ public class ScreenWorker extends SwingWorker<Void, Void>{
             try {
                 byte[] bytes = new byte[1024 * 1024];
 
-                bytes = stub.sendScreen(); //array of bytes is read from the stub object
+                bytes = stub.sendScreen(); //Đọc mảng bytes từ đối tượng stub
 
-                BufferedImage bImage = ImageIO.read(new ByteArrayInputStream(bytes)); //byte array is converted back to an image
+                BufferedImage bImage = ImageIO.read(new ByteArrayInputStream(bytes)); //Mảng bytes được chuyển lại về ảnh
                 BufferedImage scaledImg = Scalr.resize(bImage, clientWidth, clientHeight, Scalr.OP_ANTIALIAS);
-                label.setIcon(new ImageIcon(scaledImg)); //image is set to the label
+                label.setIcon(new ImageIcon(scaledImg)); //Hiển thị ảnh lên label
 
             } catch (RemoteException e) {
                 e.printStackTrace();

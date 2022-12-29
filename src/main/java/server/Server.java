@@ -15,6 +15,7 @@ import java.rmi.registry.LocateRegistry;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -40,32 +41,29 @@ public class Server extends JFrame implements ActionListener {
           catch (IllegalAccessException e) {
           }
           catch (UnsupportedLookAndFeelException e) {
-          }        //Refines the look of the ui
+          }        
 
           try {
-               privateIP = InetAddress.getLocalHost();			//Local (Private) IP of your Machine
+               // Lấy đỉa chỉ private của máy
+               privateIP = InetAddress.getLocalHost();			
           }
           catch (UnknownHostException e) {
                e.printStackTrace();
           }
 
-          //Creating a GUI which prompts the user to Set up a Password
-          JLabel label = new JLabel("Set Password:");
+          //GUI để đặt mật khẩu
+          JLabel label = new JLabel("Đặt Password:");
           label.setFont(new Font("Arial", Font.PLAIN, 13));
           password = new JTextField(15);
-          password.setToolTipText("Set a Password. Share the password to Connect with your Machine!");
+          password.setToolTipText("Đặt mật khẩu. Chia sẻ mật khẩu này để các máy khác kết nối tới");
           password.setFont(new Font("Arial", Font.PLAIN, 16));
+          
           JButton submit = new JButton("Submit");
           submit.setFont(new Font("Arial", Font.PLAIN, 13));
 
-          //using JTextField instead of a JLabel to display information because, the text in textField can be selected and copied
+          // Sử dụng JTextField thay vì JLabel để có thể sao chép
           JTextField IPlabel = new JTextField();
-          IPlabel.setText("Your Machine' IP Address is:  " + privateIP.getHostAddress());			//for intraNet Connection
-          //for internet Connection (public IP as shown below or RouterIP)
-//		URL publicIpUrl = new URL("http://bot.whatismyipaddress.com");			//this website displays the system' public IP address
-//		BufferedReader br = new BufferedReader(new InputStreamReader(publicIpUrl.openStream()));					//to read the URL	
-//		String publicIP = br.readLine().trim())									//gets the first line of the URL
-//		IPlabel.setText("Your Machine' IP Address is:  " + publicIP;			//for Internet Connection 
+          IPlabel.setText("Địa chỉ IP của máy bạn:  " + privateIP.getHostAddress());	
           IPlabel.setFont(new Font("Arial", Font.PLAIN, 12));
           IPlabel.setEditable(false);
           IPlabel.setBorder(null);
@@ -98,10 +96,10 @@ public class Server extends JFrame implements ActionListener {
 
           setVisible(true);
           setSize(400, 130);
-          password.requestFocusInWindow();						//Caret focus is on this Component
+          password.requestFocusInWindow();						
           setResizable(false);
           setLocation(500, 300);
-          setTitle("Set a Password!");
+          setTitle("Cài đặt mật khẩu!");
           setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
      }
 
@@ -111,29 +109,20 @@ public class Server extends JFrame implements ActionListener {
 
      @Override
      public void actionPerformed(ActionEvent e) {
-          dispose();									//when submit is clicked, the GUI is disposed
+          dispose();
           /*
-		 * Creating RMI Registry on port 1888 (default for RMI is 1099)
-		 * Naming class provides methods to get and store the remote object (stub)
-		 * and bind the remote object by a name (burr)
+               * Tạo thanh ghi RMI trên cổng 1888 (Mặc định là 1099)
+               * Naming class cung cấp các phương thức để lấy và lưu trữ đối tượng remote (stub) và bind đối tượng remote(burr)
            */
-          try {
-               //use System.setProperty when using publicIP for Interner Connection, 
-               //swap publicIP for Router IP if Internet Connection passes through a Router
-//			System.setProperty("java.rmi.server.hostname", publicIP);		
+          try {		
 
                ScreenEvent stub = new ScreenEventImpl(password.getText());
 
-               //Uncomment below line for internet Connection and remove extends UnicastRemoteObject class from ScreeEventImpl Class
-               //1100 Port here is used as a Server Port
-//			ScreenEvent serverStub = (ScreenEvent) UnicastRemoteObject.exportObject(stub, 1100);
-               //RMIRegistry on port 1888
                LocateRegistry.createRegistry(1888);
 
-               //Naming rebind is done on the privateIP for both intraNet and internet Connection
-               Naming.rebind("rmi://" + privateIP.getHostAddress() + ":1888/burr", stub);			//Change remote Object stub to serverStub for internetConnection
-               System.out.println("Server Running!!!");
-
+               Naming.rebind("rmi://" + privateIP.getHostAddress() + ":1888/burr", stub);			
+               
+               JOptionPane.showMessageDialog(this, "Server đang chạy");
           }
           catch (RemoteException ex) {
                ex.printStackTrace();
@@ -141,6 +130,7 @@ public class Server extends JFrame implements ActionListener {
           catch (MalformedURLException ex) {
                ex.printStackTrace();
           }
+          JOptionPane.showConfirmDialog(this, "Có lỗi xảy ra");
      }
 
 }
