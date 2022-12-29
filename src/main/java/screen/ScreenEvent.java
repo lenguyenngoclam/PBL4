@@ -13,4 +13,5 @@ public interface ScreenEvent extends Remote{
 	public void mouseReleasedEvent(int buttonReleased) throws RemoteException;
 	public void keyPressed(int keyPressed) throws RemoteException;
 	public void keyReleased(int keyReleased) throws RemoteException;
+        public void mouseWheelMoved(int amount) throws RemoteException;
 }
