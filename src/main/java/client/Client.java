@@ -310,10 +310,17 @@ public class Client extends JFrame implements ActionListener {
           @Override
           public void mouseWheelMoved(MouseWheelEvent e) {
                try {
-                    stub.mouseWheelMoved(e.getScrollAmount());
+                    Thread.sleep(40);
+                    if(e.getWheelRotation() > 0)
+                         stub.mouseWheelMoved(e.getScrollAmount());
+                    else 
+                         stub.mouseWheelMoved(-e.getScrollAmount());
                }
                catch (RemoteException ex) {
                     ex.printStackTrace();
+               }
+               catch (InterruptedException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                }
           }
      }
